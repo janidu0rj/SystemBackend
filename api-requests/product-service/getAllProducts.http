@@ -1,0 +1,4 @@
+### GET request to get all products
+GET http://localhost:4002/product/all
+
+###

@@ -1,0 +1,71 @@
+server:
+  port: 4020
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: customer-service-auth-route
+          uri: http://customer-service:4000
+          predicates:
+            - Path=/api/customer/auth/**
+          filters:
+            - StripPrefix=1
+
+        - id: customer-service-profile-route
+          uri: http://customer-service:4000
+          predicates:
+            - Path=/api/customer/profile/**
+          filters:
+            - StripPrefix=1
+            - JwtValidation
+
+        - id: user-service-route
+          uri: http://user-service:4003
+          predicates:
+            - Path=/api/user/profile/**
+          filters:
+            - StripPrefix=1
+            - JwtValidation
+
+        - id: user-service-auth-route
+          uri: http://user-service:4003
+          predicates:
+            - Path=/api/user/auth/login
+          filters:
+            - StripPrefix=1
+              
+        # PRODUCT SERVICE ROUTES
+        - id: product-service-auth-route
+          uri: http://product-service:4002
+          predicates:
+            - Path=/api/product/auth/**
+          filters:
+            - StripPrefix=1
+            - JwtValidation
+            - name: RoleValidation
+              args:
+                allowedRoles: ADMIN,MANAGER,CASHIER
+
+        - id: product-service-all-route
+          uri: http://product-service:4002
+          predicates:
+            - Path=/api/product/all/**
+          filters:
+            - StripPrefix=1
+            - JwtValidation
+
+        # SHOPPING LIST SERVICE (CUSTOMER ONLY)
+        - id: shopping-list-service-route
+          uri: http://shopping-list-service:4006
+          predicates:
+            - Path=/api/shopping-list/**
+          filters:
+            - StripPrefix=1
+            - JwtValidation
+            - name: RoleValidation
+              args:
+                  allowedRoles: CUSTOMER
+
+            ### Rest Client --> http://localhost:4020/api/customer
+            ### API Gateway --> http://customer-service:4000/customer

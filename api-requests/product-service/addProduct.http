@@ -1,0 +1,19 @@
+### POST request to add a new Product
+POST http://localhost:4020/api/product/add
+Authorization: Bearer {{user_token}}
+Content-Type: application/json
+
+{
+  "productName": "Galaxy Chocolate Bar",
+  "productDescription": "Smooth and creamy milk chocolate bar, imported from UK.",
+  "productPrice": 4.99,
+  "productQuantity": 150,
+  "productCategory": "Snacks",
+  "productBrand": "Galaxy",
+  "productWeight": 0.1,
+  "productShelfNumber": 2,
+  "productRowNumber" : 1
+}
+
+
+###
