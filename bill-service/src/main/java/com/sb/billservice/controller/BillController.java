@@ -21,7 +21,7 @@ public class BillController {
     }
 
     // GET /bill/view
-    @GetMapping("/view")
+    @GetMapping("/customer/view")
     public ResponseEntity<ViewBillDTO> viewCurrentBill() {
         logger.info("📋 API call to view bill");
         ViewBillDTO bill = billService.getBill();
@@ -29,7 +29,7 @@ public class BillController {
     }
 
     // POST /bill/pay
-    @PostMapping("/pay")
+    @PostMapping("/auth/pay")
     public ResponseEntity<String> payBill(@Valid @RequestBody PayBillDTO payBillDTO) {
         logger.info("💰 API call to pay bill ID: {}", payBillDTO.getBillId());
         String response = billService.payBill(payBillDTO);

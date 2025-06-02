@@ -3,6 +3,10 @@ package com.sb.shoppinglistservice.service;
 import com.sb.customerservice.grpc.GetUsernameRequest;
 import com.sb.customerservice.grpc.GetUsernameResponse;
 import com.sb.customerservice.grpc.UserInfoServiceGrpc;
+import com.sb.productservice.grpc.ProductLookupRequest;
+import com.sb.productservice.grpc.ProductServiceGrpc;
+import com.sb.productservice.grpc.ProductShelfRowResponse;
+import com.sb.shoppinglistservice.dto.GetShoppingItemsDTO;
 import com.sb.shoppinglistservice.dto.ShoppingItemDTO;
 import com.sb.shoppinglistservice.model.ShoppingItem;
 import com.sb.shoppinglistservice.repository.ShoppingItemRepository;
@@ -13,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -32,6 +37,10 @@ public class ShoppingListServiceImpl implements ShoppingListService {
 
     @GrpcClient("customer-service")
     private UserInfoServiceGrpc.UserInfoServiceBlockingStub userInfoStub;
+
+    @GrpcClient("product-service")
+    private ProductServiceGrpc.ProductServiceBlockingStub productServiceStub;
+
 
     /** Helper to extract username from JWT in Authorization header. */
     private String extractUsernameFromRequest() {
@@ -72,6 +81,9 @@ public class ShoppingListServiceImpl implements ShoppingListService {
             item.setQuantity(itemDTO.getQuantity());
             item.setWeight(itemDTO.getWeight());
 
+            // Enrich item with shelf/row numbers from product service
+            enrichWithProductShelfRow(item);
+
             ShoppingItem saved = shoppingItemRepository.save(item);
             log.info("✅ Item '{}' added for user '{}'", saved.getItemName(), saved.getUsername());
             return "Item added successfully with ID: " + saved.getId();
@@ -105,6 +117,9 @@ public class ShoppingListServiceImpl implements ShoppingListService {
             item.setQuantity(itemDTO.getQuantity());
             item.setWeight(itemDTO.getWeight());
 
+            // Enrich item with shelf/row numbers from product service
+            enrichWithProductShelfRow(item);
+
             shoppingItemRepository.save(item);
             log.info("✅ Item ID {} updated successfully for user '{}'", itemDTO.getId(), username);
             return "Item updated successfully with ID: " + itemDTO.getId();
@@ -114,28 +129,52 @@ public class ShoppingListServiceImpl implements ShoppingListService {
         }
     }
 
+    private void enrichWithProductShelfRow(ShoppingItem item) {
+        try {
+            ProductLookupRequest req = ProductLookupRequest.newBuilder()
+                    .setItemName(item.getItemName())
+                    .build();
+
+            ProductShelfRowResponse resp = productServiceStub.getProductShelfRow(req);
+
+            if (resp.getExists()) {
+                item.setProductShelfNumber(resp.getShelfNumber());
+                item.setProductRowNumber(resp.getRowNumber());
+                log.info("Product found, shelf={}, row={}", resp.getShelfNumber(), resp.getRowNumber());
+            } else {
+                log.warn("Product not found for item '{}'", item.getItemName());
+                throw new IllegalArgumentException("Product not found in product service for item: " + item.getItemName());
+            }
+        } catch (Exception ex) {
+            log.error("gRPC call to product-service failed for item '{}': {}", item.getItemName(), ex.getMessage(), ex);
+            throw new RuntimeException("Failed to fetch product details for item: " + item.getItemName(), ex);
+        }
+    }
+
+
     @Override
     @Transactional(readOnly = true)
-    public List<ShoppingItemDTO> getItems() {
+    public List<GetShoppingItemsDTO> getItems() {
         String username = extractUsernameFromRequest();
         log.info("📥 Fetching shopping items for user: {}", username);
 
         try {
-            List<ShoppingItem> items = shoppingItemRepository.findAll()
-                    .stream()
+            // Fetch and sort for most efficient in-store path
+            List<GetShoppingItemsDTO> dtoList = shoppingItemRepository.findAll().stream()
                     .filter(item -> item.getUsername().equals(username))
+                    .sorted(Comparator.comparingInt(ShoppingItem::getProductShelfNumber).thenComparingInt(ShoppingItem::getProductRowNumber))
+                    .map(item -> {
+                        GetShoppingItemsDTO dto = new GetShoppingItemsDTO();
+                        dto.setItemName(item.getItemName());
+                        dto.setQuantity(item.getQuantity());
+                        dto.setWeight(item.getWeight());
+                        dto.setProductShelfNumber(item.getProductShelfNumber());
+                        dto.setProductRowNumber(item.getProductRowNumber());
+                        return dto;
+                    })
                     .toList();
 
-            List<ShoppingItemDTO> dtoList = items.stream().map(item -> {
-                ShoppingItemDTO dto = new ShoppingItemDTO();
-                dto.setId(item.getId());
-                dto.setItemName(item.getItemName());
-                dto.setQuantity(item.getQuantity());
-                dto.setWeight(item.getWeight());
-                return dto;
-            }).toList();
-
-            log.info("✅ Found {} item(s) for user {}", dtoList.size(), username);
+            log.info("✅ Found {} item(s) for user {} (efficient path order)", dtoList.size(), username);
             return dtoList;
         } catch (Exception e) {
             log.error("❌ Failed to fetch items for user {}: {}", username, e.getMessage(), e);

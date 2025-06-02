@@ -6,6 +6,10 @@ import com.sb.billservice.dto.ViewBillDTO;
 import com.sb.billservice.model.Bill;
 import com.sb.billservice.model.BillStatus;
 import com.sb.billservice.repository.BillRepository;
+import com.sb.customerservice.grpc.GetUsernameRequest;
+import com.sb.customerservice.grpc.GetUsernameResponse;
+import com.sb.customerservice.grpc.UserInfoServiceGrpc;
+import jakarta.servlet.http.HttpServletRequest;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,17 +25,47 @@ public class BillServiceImpl implements BillService {
 
     private final BillRepository billRepository;
 
-    public BillServiceImpl(BillRepository billRepository) {
+    private final HttpServletRequest request;
+
+    public BillServiceImpl(BillRepository billRepository, HttpServletRequest request) {
         this.billRepository = billRepository;
+        this.request = request;
     }
 
     @GrpcClient("bill-backup-service")
     private BillBackupServiceGrpc.BillBackupServiceBlockingStub billBackupService;
 
+    @GrpcClient("customer-service")
+    private UserInfoServiceGrpc.UserInfoServiceBlockingStub userInfoStub;
+
+    /** Helper to extract username from JWT in Authorization header. */
+    private String extractUsernameFromRequest() {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            logger.error("❌ Missing or invalid Authorization header");
+            throw new SecurityException("Missing or invalid Authorization header");
+        }
+        String jwt = authHeader.substring(7);
+        try {
+            GetUsernameRequest grpcRequest = GetUsernameRequest.newBuilder().setJwt(jwt).build();
+            GetUsernameResponse grpcResponse = userInfoStub.getUsername(grpcRequest);
+            String username = grpcResponse.getUsername();
+            if (username.isEmpty()) {
+                logger.error("❌ Username extraction failed via gRPC for JWT: {}", jwt);
+                throw new SecurityException("Unable to extract username from JWT");
+            }
+            return username;
+        } catch (Exception e) {
+            logger.error("❌ gRPC call failed while extracting username: {}", e.getMessage(), e);
+            throw new SecurityException("Error extracting username from JWT via gRPC", e);
+        }
+    }
+
     @Override
     @Transactional(readOnly = true)
     public ViewBillDTO getBill() {
-        String username = "user-123"; // 🔐 Later extract from JWT
+
+        String username = extractUsernameFromRequest();
 
         logger.info("🔍 Fetching IN_PROGRESS bill for user: {}", username);
 

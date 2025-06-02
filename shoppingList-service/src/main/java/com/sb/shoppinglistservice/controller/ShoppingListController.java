@@ -1,5 +1,6 @@
 package com.sb.shoppinglistservice.controller;
 
+import com.sb.shoppinglistservice.dto.GetShoppingItemsDTO;
 import com.sb.shoppinglistservice.dto.ShoppingItemDTO;
 import com.sb.shoppinglistservice.service.ShoppingListService;
 import jakarta.validation.Valid;
@@ -40,9 +41,9 @@ public class ShoppingListController {
 
     // GET /shopping-list/items
     @GetMapping("/items")
-    public ResponseEntity<List<ShoppingItemDTO>> getItems() {
+    public ResponseEntity<List<GetShoppingItemsDTO>> getItems() {
         log.info("📦 API call to get all shopping items for user");
-        List<ShoppingItemDTO> items = shoppingListService.getItems();
+        List<GetShoppingItemsDTO> items = shoppingListService.getItems();
         return ResponseEntity.ok(items);
     }
 

@@ -5,7 +5,13 @@
       <module fileurl="file://$PROJECT_DIR$/SystemBackend.iml" filepath="$PROJECT_DIR$/SystemBackend.iml" />
       <module fileurl="file://$PROJECT_DIR$/backup-service/backup-service.iml" filepath="$PROJECT_DIR$/backup-service/backup-service.iml" />
       <module fileurl="file://$PROJECT_DIR$/bill-service/bill-service.iml" filepath="$PROJECT_DIR$/bill-service/bill-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cart-service/cart-service.iml" filepath="$PROJECT_DIR$/cart-service/cart-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/customer-backup-service/customer-backup-service.iml" filepath="$PROJECT_DIR$/customer-backup-service/customer-backup-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/customer-service/customer-service.iml" filepath="$PROJECT_DIR$/customer-service/customer-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/email-service/email-service.iml" filepath="$PROJECT_DIR$/email-service/email-service.iml" />
       <module fileurl="file://$PROJECT_DIR$/product-service/product-service.iml" filepath="$PROJECT_DIR$/product-service/product-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/shoppingList-service/shoppingList-service.iml" filepath="$PROJECT_DIR$/shoppingList-service/shoppingList-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/user-service/user-service.iml" filepath="$PROJECT_DIR$/user-service/user-service.iml" />
     </modules>
   </component>
 </project>

@@ -9,8 +9,6 @@ public class CartDTO {
 
     private Long id;
 
-    @NotBlank(message = "Name cannot be blank")
-    @Size(min = 2, max = 100, message = "Name must be between 2 and 100 characters")
     private String name;
 
     @NotNull(message = "Quantity is required")
@@ -21,13 +19,8 @@ public class CartDTO {
     @Min(value = 0, message = "Price cannot be negative")
     private Double price;
 
-    public Long getId() {
-        return id;
-    }
+    private Double weight;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -51,5 +44,21 @@ public class CartDTO {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Double weight) {
+        this.weight = weight;
     }
 }
