@@ -1,5 +1,7 @@
 package com.sb.customerservice.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -18,6 +20,8 @@ public class SecurityConfig {
     private final InactivityFilter inactivityFilter;
     private final AuthenticationProvider authenticationProvider;
     private final LogoutHandler logoutHandler;
+
+    private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 
     public SecurityConfig(JWTAuthenticationFilter jwtAuthFilter,
                           InactivityFilter inactivityFilter,
@@ -48,9 +52,15 @@ public class SecurityConfig {
         http.logout(logout -> logout
                 .logoutUrl("/customer/profile/logout") // Logout endpoint
                 .addLogoutHandler(logoutHandler) // Custom logout handling
-                .logoutSuccessHandler((request, response, authentication) ->
-                        SecurityContextHolder.clearContext() // Clear security context after logout
-                )
+                .logoutSuccessHandler((request, response, authentication) -> {
+                    logger.info("User logged out successfully");
+                    SecurityContextHolder.clearContext(); // Clear security context after logout
+
+                    // Optionally send a 200 OK response (important for frontend to detect success)
+                    response.setStatus(200);
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"message\":\"Logout successful\"}");
+                })
         );
 
         return http.build();

@@ -37,10 +37,7 @@ class SmartCartApp extends StatelessWidget {
           case '/cart':
             return MaterialPageRoute(builder: (_) => const CartPage());
           case '/profile':
-            final args = settings.arguments as Map<String, dynamic>?;
-            return MaterialPageRoute(
-              builder: (_) => ProfilePage(username: args?['username'] ?? ''),
-            );
+            return MaterialPageRoute(builder: (_) => const ProfilePage());
           case '/product-list':
             return MaterialPageRoute(builder: (_) => const ProductListPage());
           case '/product-detail':

@@ -1,29 +1,43 @@
 class ProductDTO {
-  final int id;
+  final String barcode;
   final String name;
+  final String description;
   final double price;
-  final String weight;
-  final String imageUrl;
-  final int availableUnits; // <-- new field
+  final int quantity;
+  final String category;
+  final String brand;
+  final double weight;
+  final int shelfNumber;
+  final int rowNumber;
+  final String imageUrl; // Optional, can be empty
 
   ProductDTO({
-    required this.id,
+    required this.barcode,
     required this.name,
+    required this.description,
     required this.price,
+    required this.quantity,
+    required this.category,
+    required this.brand,
     required this.weight,
-    required this.imageUrl,
-    required this.availableUnits, // <-- new field in constructor
+    required this.shelfNumber,
+    required this.rowNumber,
+    this.imageUrl = '',
   });
 
   factory ProductDTO.fromJson(Map<String, dynamic> json) {
     return ProductDTO(
-      id: json['id'],
-      name: json['name'],
-      price: double.tryParse(json['price'].toString()) ?? 0.0,
-      weight: json['weight'],
-      imageUrl: json['imageUrl'] ?? '',
-      availableUnits:
-          json['qty'] ?? 0, // <-- parse available units with fallback
+      barcode: json['barcode'] ?? '',
+      name: json['productName'] ?? '',
+      description: json['productDescription'] ?? '',
+      price: (json['productPrice'] ?? 0).toDouble(),
+      quantity: json['productQuantity'] ?? 0,
+      category: json['productCategory'] ?? '',
+      brand: json['productBrand'] ?? '',
+      weight: (json['productWeight'] ?? 0).toDouble(),
+      shelfNumber: json['productShelfNumber'] ?? 0,
+      rowNumber: json['productRowNumber'] ?? 0,
+      imageUrl: json['productImage'] ?? '', // Make sure backend sends image URL as string
     );
   }
 }

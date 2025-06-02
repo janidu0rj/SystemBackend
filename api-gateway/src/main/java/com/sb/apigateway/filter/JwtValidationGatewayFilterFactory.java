@@ -46,10 +46,11 @@ public class JwtValidationGatewayFilterFactory extends AbstractGatewayFilterFact
             String validateUri;
 
             // Routing logic based on path
-            if (path.startsWith("/api/user") || path.startsWith("/user") || path.startsWith("/api/product") || path.startsWith("/product")) {
+            if (path.startsWith("/api/user") || path.startsWith("/user") || path.startsWith("/api/product/auth") || path.startsWith("/product/auth")) {
                 targetClient = userWebClient;
                 validateUri = "/user/profile/validate";
-            } else if (path.startsWith("/api/customer") || path.startsWith("/customer") || path.startsWith("/api/shopping-list") || path.startsWith("/shopping-list")) {
+            } else if (path.startsWith("/api/customer") || path.startsWith("/customer") || path.startsWith("/api/shopping-list") || path.startsWith("/shopping-list")
+                       || path.startsWith("/api/product/all") || path.startsWith("/product/all") || path.startsWith("/api/cart") || path.startsWith("/cart")) {
                 targetClient = customerWebClient;
                 validateUri = "/customer/profile/validate";
             } else {

@@ -54,7 +54,7 @@ class ProductDetailPage extends StatelessWidget {
             const SizedBox(height: 8),
             // Quantity Available
             Text(
-              'Available Units: ${product.availableUnits}', // fixed here
+              'Available Units: ${product.quantity}', // fixed here
               style: const TextStyle(fontSize: 18, color: Colors.green),
             ),
 

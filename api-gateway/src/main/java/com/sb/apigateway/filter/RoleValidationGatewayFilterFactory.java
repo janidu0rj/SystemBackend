@@ -174,6 +174,31 @@ public class RoleValidationGatewayFilterFactory extends AbstractGatewayFilterFac
                         });
             }
 
+            if (path.startsWith("/cart") || path.startsWith("/api/cart")) {
+                // Use customerWebClient and /customer/profile/role ONLY
+                logger.info("Validating /cart endpoint with CUSTOMER roles only (customer service)");
+                return customerWebClient.get()
+                        .uri("/customer/profile/role")
+                        .header(HttpHeaders.AUTHORIZATION, token)
+                        .retrieve()
+                        .bodyToMono(Map.class)
+                        .flatMap(response -> {
+                            String role = response.get("role") != null ? response.get("role").toString() : null;
+                            if (role != null && config.allowedRoles.contains(role)) {
+                                logger.info("Access granted for /cart/** to CUSTOMER role '{}'", role);
+                                return chain.filter(exchange);
+                            }
+                            logger.warn("Access denied for /cart/** to role '{}'", role);
+                            exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
+                            return exchange.getResponse().setComplete();
+                        })
+                        .onErrorResume(ex -> {
+                            logger.error("Customer role validation failed: {}", ex.getMessage());
+                            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+                            return exchange.getResponse().setComplete();
+                        });
+            }
+
             // For all other paths, fallback to normal logic (default: user roles)
             logger.info("Default role validation path used (user roles only): {}", path);
             return userWebClient.get()

@@ -45,6 +45,37 @@ class AuthService {
     await prefs.setString('role', role);
   }
 
+  /// Logout user, call backend, clear local storage
+  Future<bool> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString('access_token') ?? '';
+
+    try {
+      // Call the backend logout endpoint (if token exists)
+      final response = await http.get(
+        Uri.parse('${ApiConfig.baseUrl}/customer/profile/logout'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        },
+      );
+
+      // Clean up local storage always
+      await prefs.remove('access_token');
+      await prefs.remove('refresh_token');
+      await prefs.remove('role');
+
+      return response.statusCode == 200;
+    } catch (e) {
+      print('Logout error: $e');
+      // Still clear storage on error
+      await prefs.remove('access_token');
+      await prefs.remove('refresh_token');
+      await prefs.remove('role');
+      return false;
+    }
+  }
+
   /// Registers a new user (customer)
   Future<bool> register({
     required String firstName,

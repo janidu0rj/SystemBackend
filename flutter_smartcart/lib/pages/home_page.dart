@@ -1,14 +1,37 @@
 import 'package:flutter/material.dart';
+import '../services/auth_service.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   final String username;
 
   const HomePage({super.key, required this.username});
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  bool _isLoggingOut = false;
+
+  Future<void> _handleLogout(BuildContext context) async {
+    setState(() => _isLoggingOut = true);
+    final success = await AuthService().logout();
+    setState(() => _isLoggingOut = false);
+
+    // Optionally show a snackbar
+    if (success) {
+      Navigator.pushReplacementNamed(context, '/');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Logout failed. Try again.")),
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Welcome, $username')),
+      appBar: AppBar(title: Text('Welcome, ${widget.username}')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: GridView.count(
@@ -44,16 +67,16 @@ class HomePage extends StatelessWidget {
                 Navigator.pushNamed(
                   context,
                   '/profile',
-                  arguments: {'username': username}, // Pass username here
+                  arguments: {'username': widget.username},
                 );
               },
             ),
-            _buildHomeCard(
+            _isLoggingOut
+                ? Center(child: CircularProgressIndicator())
+                : _buildHomeCard(
               icon: Icons.logout,
               label: 'Logout',
-              onTap: () {
-                Navigator.pushReplacementNamed(context, '/');
-              },
+              onTap: () => _handleLogout(context),
             ),
           ],
         ),

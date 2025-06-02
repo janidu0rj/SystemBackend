@@ -159,6 +159,15 @@
             <version>0.12.5</version>
         </dependency>
 
+
+        <!-- (Optional) gRPC test utilities -->
+        <dependency>
+            <groupId>io.grpc</groupId>
+            <artifactId>grpc-testing</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+
     </dependencies>
 
     <build>

@@ -3,6 +3,8 @@ package com.sb.customerservice.service;
 import com.sb.customerservice.repository.TokenRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Service;
@@ -17,15 +19,20 @@ public class LogoutServiceImpl implements  LogoutService, LogoutHandler {
         this.tokenRepository = tokenRepository;
     }
 
+    private static final Logger logger = LoggerFactory.getLogger(LogoutServiceImpl.class);
+
     @Override
     @Transactional
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         final String authHeader = request.getHeader("Authorization");
         final String jwtToken;
 
+        System.out.println("Logout endpoint hit. Authorization: " + authHeader);
+
         // Validate the Authorization header
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return; // Exit if the header is missing or does not contain a Bearer token
+            System.out.println("No valid Authorization header for logout.");
+            return;
         }
 
         // Extract the JWT token from the Authorization header
@@ -38,7 +45,10 @@ public class LogoutServiceImpl implements  LogoutService, LogoutHandler {
         if (storedToken != null) {
             storedToken.setExpired(true);
             storedToken.setRevoked(true);
-            tokenRepository.save(storedToken); // Persist the changes
+            tokenRepository.save(storedToken);
+            System.out.println("Token revoked successfully.");
+        } else {
+            System.out.println("Token not found in DB.");
         }
     }
 

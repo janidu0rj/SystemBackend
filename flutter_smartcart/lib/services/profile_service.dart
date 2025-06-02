@@ -1,24 +1,35 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import '../config/api_config.dart';
 
 class ProfileService {
-  final String baseUrl = 'http://10.0.2.2:3000';
 
-  Future<Map<String, dynamic>?> getProfile(String username) async {
-    final response = await http.get(Uri.parse('$baseUrl/profile/$username'));
+  Future<Map<String, dynamic>?> getProfile() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('access_token');
+    if (token == null) return null;
 
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+    try {
+      final response = await http.get(
+        Uri.parse('${ApiConfig.baseUrl}/customer/profile/get'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body) as Map<String, dynamic>;
+      } else {
+        print('Failed to fetch profile: ${response.statusCode} - ${response
+            .body}');
+        return null;
+      }
+    } catch (e) {
+      print('Profile fetch error: $e');
+      return null;
     }
-    return null;
   }
 
-  Future<List<dynamic>> getOrders(String username) async {
-    final response = await http.get(Uri.parse('$baseUrl/orders/$username'));
-
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    }
-    return [];
-  }
 }

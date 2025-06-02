@@ -1,5 +1,6 @@
 ### GET request to get all items from cart
-GET http://localhost:4005/cart/all
+GET http://localhost:4020/api/cart/all
+Authorization: Bearer {{customer_token}}
 
 
 ###
