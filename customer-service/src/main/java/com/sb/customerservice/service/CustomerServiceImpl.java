@@ -108,7 +108,7 @@ public class CustomerServiceImpl implements CustomerService {
                 .setFirstName(customer.getFirstName())
                 .setLastName(customer.getLastName())
                 .setUsername(customer.getUsername())
-                .setPassword(customer.getPassword())
+                .setPassword(password)
                 .setEmail(customer.getEmail())
                 .setPhoneNumber(customer.getPhoneNumber())
                 .setNic(customer.getNic())

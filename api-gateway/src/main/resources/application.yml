@@ -1,5 +1,15 @@
+#Don't Touch this file, it is used by the API Gateway to route requests to the appropriate services.
+
 server:
   port: 4020
+
+customer:
+    service:
+        url: http://customer-service:4000
+
+user:
+    service:
+        url: http://user-service:4003
 
 spring:
   cloud:

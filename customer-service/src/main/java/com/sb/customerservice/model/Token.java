@@ -3,7 +3,7 @@ package com.sb.customerservice.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "tokens")
+@Table(name = "customer_tokens")
 public class Token {
 
     @Id
