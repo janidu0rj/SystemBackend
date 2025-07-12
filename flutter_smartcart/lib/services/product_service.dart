@@ -20,4 +20,23 @@ class ProductService {
       return [];
     }
   }
+
+  Future<bool> addToShoppingList({
+    required String name,
+    required int quantity,
+    required double weight,
+  }) async {
+    try {
+      final body = {
+        'itemName': name,
+        'quantity': quantity,
+        'weight': weight,
+      };
+      final response = await _client.post('/shopping-list/add', body: body);
+      return response.statusCode == 200;
+    } catch (e) {
+      print('Add to shopping list failed: $e');
+      return false;
+    }
+  }
 }

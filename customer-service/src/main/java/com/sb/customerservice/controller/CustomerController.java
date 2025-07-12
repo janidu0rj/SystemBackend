@@ -11,6 +11,7 @@ import com.sb.customerservice.service.JWTService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -42,8 +43,13 @@ public class CustomerController {
     // POST /customer/register
     @PostMapping("/auth/register")
     public ResponseEntity<String> registerCustomer(@Valid @RequestBody RegisterCustomerDTO registerCustomerDTO) {
-        String response = customerService.registerCustomer(registerCustomerDTO);
-        return ResponseEntity.ok(response);
+        try {
+            String response = customerService.registerCustomer(registerCustomerDTO);
+            return ResponseEntity.ok(response); // ✅ e.g., "Registration successful. Email sent!"
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage()); // 🛑 This message will be shown as toast
+        }
     }
 
     @GetMapping("/profile/validate")

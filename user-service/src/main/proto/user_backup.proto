@@ -20,6 +20,7 @@ enum Role {
   SECURITY = 3;
   SUPPLIER = 4;
   STAFF = 5;
+  GUEST = 6;
 }
 
 // Message to send

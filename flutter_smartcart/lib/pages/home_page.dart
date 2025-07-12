@@ -54,6 +54,13 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             _buildHomeCard(
+              icon: Icons.list,
+              label: 'Your Shopping List',
+              onTap: () {
+                Navigator.pushNamed(context, '/shopping-list');
+              },
+            ),
+            _buildHomeCard(
               icon: Icons.shopping_cart,
               label: 'My Cart',
               onTap: () {

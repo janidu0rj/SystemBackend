@@ -48,10 +48,10 @@ public class ShoppingListController {
     }
 
     // DELETE /shopping-list/delete/{id}
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteItem(@PathVariable String id) {
-        log.info("🗑️ API call to delete item ID: {}", id);
-        shoppingListService.deleteItem(id);
+    @DeleteMapping("/delete/{itemName}")
+    public ResponseEntity<String> deleteItem(@PathVariable String itemName) {
+        log.info("🗑️ API call to delete item: {}", itemName);
+        shoppingListService.deleteItem(itemName);
         return ResponseEntity.ok("✅ Item deleted successfully");
     }
 

@@ -185,31 +185,30 @@ public class ShoppingListServiceImpl implements ShoppingListService {
 
     @Override
     @Transactional
-    public void deleteItem(String itemId) {
+    public void deleteItem(String itemName) {
         String username = extractUsernameFromRequest();
-        log.info("🗑️ Attempting to delete item with ID {} for user {}", itemId, username);
+        log.info("🗑️ Attempting to delete item with ID {} for user {}", itemName, username);
 
         try {
-            Long id = Long.parseLong(itemId);
-            ShoppingItem item = shoppingItemRepository.findById(id)
+            ShoppingItem item = shoppingItemRepository.findByItemName(itemName)
                     .orElseThrow(() -> {
-                        log.warn("❌ Item with ID {} not found", itemId);
+                        log.warn("❌ Item with ID {} not found", itemName);
                         return new IllegalArgumentException("Item not found");
                     });
 
             if (!item.getUsername().equals(username)) {
-                log.warn("❌ Unauthorized attempt to delete item ID {} by user {}", itemId, username);
+                log.warn("❌ Unauthorized attempt to delete item ID {} by user {}", item, username);
                 throw new SecurityException("You are not authorized to delete this item");
             }
 
-            shoppingItemRepository.deleteById(id);
-            log.info("✅ Item with ID {} successfully deleted for user {}", id, username);
+            shoppingItemRepository.deleteByItemName(itemName);
+            log.info("✅ Item {} successfully deleted for user {}", item, username);
 
         } catch (NumberFormatException e) {
-            log.error("❌ Invalid ID format: {}", itemId, e);
+            log.error("❌ Invalid Name format: {}", itemName, e);
             throw new IllegalArgumentException("Invalid ID format", e);
         } catch (Exception e) {
-            log.error("❌ Failed to delete item ID {} for user {}: {}", itemId, username, e.getMessage(), e);
+            log.error("❌ Failed to delete item {} for user {}: {}", itemName, username, e.getMessage(), e);
             throw new RuntimeException("Failed to delete shopping item", e);
         }
     }

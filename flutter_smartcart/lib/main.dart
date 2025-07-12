@@ -6,7 +6,8 @@ import 'pages/cart_page.dart';
 import 'pages/profile_page.dart';
 import 'pages/product_detail_page.dart';
 import 'pages/product_list_page.dart';
-import 'models/product_dto.dart'; // ✅ Make sure to import ProductDTO
+import 'models/product_dto.dart'; //
+import 'pages/shopping_list_page.dart';
 
 void main() {
   runApp(const SmartCartApp());
@@ -40,6 +41,8 @@ class SmartCartApp extends StatelessWidget {
             return MaterialPageRoute(builder: (_) => const ProfilePage());
           case '/product-list':
             return MaterialPageRoute(builder: (_) => const ProductListPage());
+          case '/shopping-list':
+            return MaterialPageRoute(builder: (_) => const ShoppingListPage());
           case '/product-detail':
             final product = settings.arguments;
             if (product == null || product is! ProductDTO) {

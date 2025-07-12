@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="cart-service" />
         <module name="customer-service" />
+        <module name="IntegrationTests" />
         <module name="email-service" />
         <module name="api-gateway" />
         <module name="customer-backup-service" />
@@ -16,11 +17,11 @@
         <module name="backup-service" />
         <module name="user-service" />
         <module name="bill-service" />
-        <module name="integration-tests" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="auth-service" target="21" />
+      <module name="integration-tests" target="21" />
       <module name="shopping-list" target="21" />
     </bytecodeTargetLevel>
   </component>

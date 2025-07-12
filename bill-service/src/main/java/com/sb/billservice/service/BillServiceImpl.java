@@ -120,7 +120,7 @@ public class BillServiceImpl implements BillService {
         // 📦 Prepare gRPC backup request
         BillRequest grpcRequest = BillRequest.newBuilder()
                 .setId(bill.getId())
-                .setCartId(bill.getCarId())
+                .setCartId(bill.getCartId())
                 .setUsername(bill.getUsername())
                 .setTotalPrice(bill.getTotalPrice())
                 .setDate(bill.getDate().toString())

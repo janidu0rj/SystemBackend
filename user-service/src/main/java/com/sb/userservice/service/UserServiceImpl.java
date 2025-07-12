@@ -81,6 +81,7 @@ public class UserServiceImpl implements UserService {
             case SECURITY -> com.sb.backupservice.grpc.Role.SECURITY;
             case SUPPLIER -> com.sb.backupservice.grpc.Role.SUPPLIER;
             case STAFF -> com.sb.backupservice.grpc.Role.STAFF;
+            case GUEST -> com.sb.backupservice.grpc.Role.GUEST;
         };
     }
 
@@ -293,11 +294,6 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public String deleteUser(String username,Authentication authentication) {
-
-        if (!Objects.equals(authentication.getName(), username)){
-            logger.warn("❌ Unauthorized deletion attempt by user: {}", authentication.getName());
-            throw new IllegalArgumentException("You are not authorized to delete this user.");
-        }
 
         // Check if user exists
         userRepository.findByUsername(username).ifPresentOrElse(user -> {

@@ -1,5 +1,6 @@
-### GET request to example server
-GET https://examples.http-client.intellij.net/get
-    ?generated-in=IntelliJ IDEA
+### GET request to validate a user's token
+
+GET http://localhost:4020/api/user/profile/validate
+Authorization: Bearer {{user_token}}
 
 ###

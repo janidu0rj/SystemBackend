@@ -39,7 +39,7 @@ public class BillBackupService extends BillBackupServiceGrpc.BillBackupServiceIm
             // Map gRPC request to entity
             BillBackup backup = new BillBackup();
             backup.setId(request.getId());
-            backup.setCarId(request.getCartId());
+            backup.setCartId(request.getCartId());
             backup.setUsername(request.getUsername());
             backup.setTotalPrice(request.getTotalPrice());
             backup.setDate(LocalDateTime.parse(request.getDate()));

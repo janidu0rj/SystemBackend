@@ -70,7 +70,7 @@ public class CartToBillService extends BillUpdateServiceGrpc.BillUpdateServiceIm
             } else {
                 Bill bill = new Bill();
                 bill.setUsername(username);
-                bill.setCarId(cartId);
+                bill.setCartId(cartId);
                 bill.setTotalPrice(changeInTotal);
                 bill.setDate(LocalDateTime.now());
                 bill.setApprovedBy(null); // To be updated during payment phase

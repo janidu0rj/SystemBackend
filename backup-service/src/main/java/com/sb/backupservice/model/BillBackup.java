@@ -11,8 +11,8 @@ public class BillBackup {
     @Id
     private Long id;
 
-    @Column(name = "car_id", nullable = false)
-    private Long carId;
+    @Column(name = "cart_id", nullable = false)
+    private Long cartId;
 
     @Column(name = "username", nullable = false)
     private String username;
@@ -42,12 +42,12 @@ public class BillBackup {
         this.id = id;
     }
 
-    public Long getCarId() {
-        return carId;
+    public Long getCartId() {
+        return cartId;
     }
 
-    public void setCarId(Long carId) {
-        this.carId = carId;
+    public void setCartId(Long cartId) {
+        this.cartId = cartId;
     }
 
     public String getUsername() {
