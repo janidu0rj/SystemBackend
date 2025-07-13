@@ -36,9 +36,9 @@ public class AdminInitializer implements CommandLineRunner {
 
         // Prepare the admin registration DTO
         RegisterUserDTO dto = new RegisterUserDTO();
-        dto.setFirstName("Minuk");
+        dto.setFirstName("Minul");
         dto.setLastName("Sankalpa");
-        dto.setEmail("sranawaka56@gmail.com");
+        dto.setEmail("dimanthathilakasiri97@gmail.com");
         dto.setPhoneNumber("+94774049338");
         dto.setNic("200163827568V");
         dto.setRole(Role.ADMIN);

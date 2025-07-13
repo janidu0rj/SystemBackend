@@ -23,9 +23,9 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
         _isLoading = false;
       });
     } catch (_) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Failed to load items")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Failed to load items")));
     }
   }
 
@@ -49,23 +49,54 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('🛍️ Your Shopping List'),
+        backgroundColor: const Color(0xFF1976D2),
+        title: const Text(
+          '🛍️ Your Shopping List',
+          style: TextStyle(color: Colors.white),
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.home, color: Colors.white),
+            tooltip: 'Home',
+            onPressed: () {
+              Navigator.pushNamedAndRemoveUntil(context, '/home', (_) => false);
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.storefront, color: Colors.white),
+            tooltip: 'View Products',
+            onPressed: () {
+              Navigator.pushNamed(context, '/product-list');
+            },
+          ),
           if (_items.isNotEmpty)
             IconButton(
-              icon: const Icon(Icons.delete_sweep),
+              icon: const Icon(Icons.delete_sweep, color: Colors.white),
               tooltip: 'Delete All',
               onPressed: () async {
                 final confirmed = await showDialog<bool>(
                   context: context,
-                  builder: (_) => AlertDialog(
-                    title: const Text('Confirm Delete All'),
-                    content: const Text('Are you sure you want to delete all items?'),
-                    actions: [
-                      TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
-                      TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Delete')),
-                    ],
-                  ),
+                  builder:
+                      (_) => AlertDialog(
+                        title: const Text('Confirm Delete All'),
+                        content: const Text(
+                          'Are you sure you want to delete all items?',
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, false),
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, true),
+                            child: const Text('Delete'),
+                          ),
+                        ],
+                      ),
                 );
                 if (confirmed == true) {
                   await _deleteAll();
@@ -74,19 +105,21 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
             ),
         ],
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _items.isEmpty
-          ? const Center(child: Text("🛒 Your shopping list is empty"))
-          : ListView.builder(
-        itemCount: _items.length,
-        itemBuilder: (context, index) {
-          return ShoppingItemCard(
-            item: _items[index],
-            onDelete: () => _deleteItem(_items[index].itemName),
-          );
-        },
-      ),
+
+      body:
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : _items.isEmpty
+              ? const Center(child: Text("🛒 Your shopping list is empty"))
+              : ListView.builder(
+                itemCount: _items.length,
+                itemBuilder: (context, index) {
+                  return ShoppingItemCard(
+                    item: _items[index],
+                    onDelete: () => _deleteItem(_items[index].itemName),
+                  );
+                },
+              ),
     );
   }
 }
