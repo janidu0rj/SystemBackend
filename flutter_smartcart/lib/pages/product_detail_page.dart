@@ -20,7 +20,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
     if (selectedQuantity > product.quantity) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('❌ Quantity exceeds available stock (${product.quantity})')),
+        SnackBar(
+          content: Text(
+            '❌ Quantity exceeds available stock (${product.quantity})',
+          ),
+        ),
       );
       return;
     }
@@ -47,7 +51,43 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     final product = widget.product;
 
     return Scaffold(
-      appBar: AppBar(title: Text(product.name)),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF1976D2), // Your general blue color
+        title: Text(
+          'Product Details',
+          style: const TextStyle(color: Colors.white),
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context); // Back button
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.home, color: Colors.white),
+            onPressed: () {
+              Navigator.pushNamedAndRemoveUntil(context, '/home', (_) => false);
+            },
+            tooltip: 'Home',
+          ),
+          IconButton(
+            icon: const Icon(Icons.playlist_add_check, color: Colors.white),
+            onPressed: () {
+              Navigator.pushNamed(context, '/shopping-list');
+            },
+            tooltip: 'Shopping List',
+          ),
+          IconButton(
+            icon: const Icon(Icons.storefront, color: Colors.white),
+            onPressed: () {
+              Navigator.pushNamed(context, '/product-list');
+            },
+            tooltip: 'View Products',
+          ),
+        ],
+      ),
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -107,12 +147,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 const SizedBox(width: 12),
                 DropdownButton<int>(
                   value: selectedQuantity,
-                  items: List.generate(product.quantity, (i) => i + 1)
-                      .map((qty) => DropdownMenuItem(
-                    value: qty,
-                    child: Text(qty.toString()),
-                  ))
-                      .toList(),
+                  items:
+                      List.generate(product.quantity, (i) => i + 1)
+                          .map(
+                            (qty) => DropdownMenuItem(
+                              value: qty,
+                              child: Text(qty.toString()),
+                            ),
+                          )
+                          .toList(),
                   onChanged: (val) {
                     if (val != null) {
                       setState(() {
@@ -133,7 +176,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 icon: const Icon(Icons.playlist_add),
                 label: const Text('Add to Shopping List'),
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
                 ),
               ),
             ),
