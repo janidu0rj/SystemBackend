@@ -157,6 +157,13 @@ class _HomePageState extends State<HomePage> {
                         arguments: {'username': username},
                       ),
                 ),
+                _buildHomeCard(
+                  icon: Icons.map,
+                  label: 'Store Navigation',
+                  onTap: () {
+                    Navigator.pushNamed(context, '/store-nav');
+                  },
+                ),
                 _isLoggingOut
                     ? const Center(child: CircularProgressIndicator())
                     : _buildHomeCard(

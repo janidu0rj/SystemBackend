@@ -43,6 +43,8 @@ class SmartCartApp extends StatelessWidget {
             return MaterialPageRoute(builder: (_) => const ProductListPage());
           case '/shopping-list':
             return MaterialPageRoute(builder: (_) => const ShoppingListPage());
+          case '/store-nav':
+            return MaterialPageRoute(builder: (_) => const ShoppingListPage());
           case '/product-detail':
             final product = settings.arguments;
             if (product == null || product is! ProductDTO) {
