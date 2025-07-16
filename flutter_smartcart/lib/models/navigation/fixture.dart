@@ -1,6 +1,16 @@
 import 'dart:ui';
 
 class Fixture {
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'x': x,
+      'y': y,
+      'points': points,
+      'name': name,
+      'color': color,
+    };
+  }
   final String id;
   final double x;
   final double y;

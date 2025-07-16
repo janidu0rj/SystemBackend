@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../services/mqtt/user_position_service.dart';
 import 'dart:async';
+
+import '../services/user_position_service.dart';
 
 class ConnectionStatusBar extends StatefulWidget {
   final UserPositionService positionService;

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import '../models/navigation/item.dart';
-import '../models/navigation/fixture.dart';
-import '../services/data/data_service.dart';
+import '../../models/navigation/item.dart';
+import '../../models/navigation/fixture.dart';
+import '../services/data_service.dart';
 
 class ShoppingListSidebar extends StatelessWidget {
   final List<String> shoppingList;
   final Map<String, Fixture> fixtures;
   final Map<String, List<List<List<Item>>>> itemMap;
-  final String? selectedItemId;
+  final String? selectedItemName;
   final Function(String) onItemSelected;
 
   const ShoppingListSidebar({
@@ -15,7 +15,7 @@ class ShoppingListSidebar extends StatelessWidget {
     required this.shoppingList,
     required this.fixtures,
     required this.itemMap,
-    required this.selectedItemId,
+    required this.selectedItemName,
     required this.onItemSelected,
   });
 
@@ -65,7 +65,7 @@ class ShoppingListSidebar extends StatelessWidget {
                   fixtures,
                   itemMap,
                 );
-                final isSelected = selectedItemId == itemId;
+                final isSelected = selectedItemName == itemId;
                 return Container(
                   margin: const EdgeInsets.symmetric(
                     horizontal: 8,
@@ -116,3 +116,4 @@ class ShoppingListSidebar extends StatelessWidget {
     );
   }
 }
+

@@ -1,26 +1,47 @@
 import 'package:flutter/material.dart';
-import '../services/mqtt/user_position_service.dart';
 import '../models/navigation/fixture.dart';
 import '../models/navigation/item_position.dart';
+import '../models/navigation/item.dart';
+import '../services/user_position_service.dart';
 import '../utils/color_utils.dart';
+import 'shopping_list_map_overlay.dart';
 
 class StoreLayoutPainter extends CustomPainter {
   final Map<String, Fixture> fixtures;
   final double scale;
   final ItemPosition? selectedItemPosition;
   final UserPosition? userPosition;
+  final List<String>? shoppingList;
+  final Map<String, List<List<List<Item>>>>? itemMap;
+  final String? selectedItemName;
 
   StoreLayoutPainter(
     this.fixtures,
     this.scale,
     this.selectedItemPosition,
-    this.userPosition,
-  );
+    this.userPosition, {
+    this.shoppingList,
+    this.itemMap,
+    this.selectedItemName,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
     for (final fixture in fixtures.values) {
       _drawFixture(canvas, fixture);
+    }
+
+    // Draw shopping list items (except selected)
+    if (shoppingList != null && itemMap != null) {
+      final positions = ShoppingListMapOverlay.getShoppingListPositions(
+        shoppingList: shoppingList!,
+        selectedItemName: selectedItemName,
+        fixtures: fixtures,
+        itemMap: itemMap!,
+      );
+      for (final pos in positions) {
+        _drawShoppingListItem(canvas, pos);
+      }
     }
 
     // Draw item position circle if an item is selected
@@ -32,6 +53,24 @@ class StoreLayoutPainter extends CustomPainter {
     if (userPosition != null) {
       _drawUserPosition(canvas, userPosition!);
     }
+  }
+
+  void _drawShoppingListItem(Canvas canvas, ItemPosition itemPosition) {
+    final position = Offset(
+      itemPosition.position.dx * scale,
+      itemPosition.position.dy * scale,
+    );
+
+    final circlePaint = Paint()
+      ..color = const Color.fromARGB(255, 0, 200, 83) // Green for shopping list
+      ..style = PaintingStyle.fill;
+
+    final outerCirclePaint = Paint()
+      ..color = const Color.fromARGB(82, 0, 200, 83)
+      ..style = PaintingStyle.fill;
+
+    canvas.drawCircle(position, 2, outerCirclePaint);
+    canvas.drawCircle(position, 1.5, circlePaint);
   }
 
   void _drawFixture(Canvas canvas, Fixture fixture) {
@@ -162,42 +201,42 @@ class StoreLayoutPainter extends CustomPainter {
     // );
 
     // Draw connection line to start fixture (origin)
-    Fixture? startFixture;
-    for (final fixture in fixtures.values) {
-      if (fixture.name.toLowerCase().contains('start')) {
-        startFixture = fixture;
-        break;
-      }
-    }
+    // Fixture? startFixture;
+    // for (final fixture in fixtures.values) {
+    //   if (fixture.name.toLowerCase().contains('start')) {
+    //     startFixture = fixture;
+    //     break;
+    //   }
+    // }
 
-    if (startFixture != null) {
-      final startPos = Offset(startFixture.x * scale, startFixture.y * scale);
-      final connectionPaint = Paint()
-        ..color = const Color.fromARGB(255, 235, 54, 244)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1;
+    // if (startFixture != null) {
+    //   final startPos = Offset(startFixture.x * scale, startFixture.y * scale);
+    //   final connectionPaint = Paint()
+    //     ..color = const Color.fromARGB(255, 235, 54, 244)
+    //     ..style = PaintingStyle.stroke
+    //     ..strokeWidth = 1;
 
-      // Draw dashed line
-      final double dashWidth = 5;
-      final double dashSpace = 5;
-      double distance = (position - startPos).distance;
-      double drawn = 0;
+    //   // Draw dashed line
+    //   final double dashWidth = 5;
+    //   final double dashSpace = 5;
+    //   double distance = (position - startPos).distance;
+    //   double drawn = 0;
 
-      while (drawn < distance) {
-        double remainingDistance = distance - drawn;
-        double currentDash = remainingDistance > dashWidth
-            ? dashWidth
-            : remainingDistance;
+    //   while (drawn < distance) {
+    //     double remainingDistance = distance - drawn;
+    //     double currentDash = remainingDistance > dashWidth
+    //         ? dashWidth
+    //         : remainingDistance;
 
-        double progress = drawn / distance;
-        Offset start = Offset.lerp(startPos, position, progress)!;
-        progress = (drawn + currentDash) / distance;
-        Offset end = Offset.lerp(startPos, position, progress)!;
+    //     double progress = drawn / distance;
+    //     Offset start = Offset.lerp(startPos, position, progress)!;
+    //     progress = (drawn + currentDash) / distance;
+    //     Offset end = Offset.lerp(startPos, position, progress)!;
 
-        canvas.drawLine(start, end, connectionPaint);
-        drawn += dashWidth + dashSpace;
-      }
-    }
+    //     canvas.drawLine(start, end, connectionPaint);
+    //     drawn += dashWidth + dashSpace;
+    //   }
+    // }
   }
 
   @override

@@ -25,10 +25,40 @@ class _CartPageState extends State<CartPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Cart'),
-        backgroundColor: Colors.teal,
+        backgroundColor: const Color(0xFF1976D2),
         elevation: 2,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+          tooltip: 'Back',
+        ),
+        title: const Text('My Cart', style: TextStyle(color: Colors.white)),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.home, color: Colors.white),
+            tooltip: 'Home',
+            onPressed: () {
+              Navigator.pushNamed(context, '/home');
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.shopping_bag, color: Colors.white),
+            tooltip: 'View Products',
+            onPressed: () {
+              Navigator.pushNamed(context, '/product-list');
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.list_alt, color: Colors.white),
+            tooltip: 'Shopping List',
+            onPressed: () {
+              Navigator.pushNamed(context, '/shopping-list');
+            },
+          ),
+        ],
       ),
+
       body: FutureBuilder<List<CartDTO>>(
         future: _futureCartItems,
         builder: (context, snapshot) {
@@ -50,7 +80,11 @@ class _CartPageState extends State<CartPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.remove_shopping_cart, size: 60, color: Colors.teal.shade200),
+                  Icon(
+                    Icons.remove_shopping_cart,
+                    size: 60,
+                    color: Colors.teal.shade200,
+                  ),
                   const SizedBox(height: 16),
                   const Text(
                     "Your cart is empty.",
@@ -79,12 +113,16 @@ class _CartPageState extends State<CartPage> {
                         contentPadding: const EdgeInsets.all(14),
                         leading: CircleAvatar(
                           backgroundColor: Colors.teal.shade100,
-                          child: Icon(Icons.shopping_bag, color: Colors.teal.shade700),
+                          child: Icon(
+                            Icons.shopping_bag,
+                            color: Colors.teal.shade700,
+                          ),
                         ),
                         title: Text(
                           item.name,
                           style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
                           ),
                         ),
                         subtitle: Column(
@@ -113,7 +151,10 @@ class _CartPageState extends State<CartPage> {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 16,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   boxShadow: [
@@ -121,9 +162,11 @@ class _CartPageState extends State<CartPage> {
                       color: Colors.teal.shade100.withOpacity(0.2),
                       blurRadius: 12,
                       offset: const Offset(0, -2),
-                    )
+                    ),
                   ],
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(22),
+                  ),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -133,7 +176,10 @@ class _CartPageState extends State<CartPage> {
                       children: [
                         const Text(
                           "Total",
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         Text(
                           "Rs. ${getTotal(cartItems).toStringAsFixed(2)}",
@@ -150,7 +196,9 @@ class _CartPageState extends State<CartPage> {
                       onPressed: () {
                         // TODO: Implement checkout flow
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Checkout coming soon!')),
+                          const SnackBar(
+                            content: Text('Checkout coming soon!'),
+                          ),
                         );
                       },
                       icon: const Icon(Icons.payment),

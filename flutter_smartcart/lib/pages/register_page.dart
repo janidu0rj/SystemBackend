@@ -8,7 +8,8 @@ class RegisterPage extends StatefulWidget {
   State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderStateMixin {
+class _RegisterPageState extends State<RegisterPage>
+    with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
 
   // Controllers
@@ -84,7 +85,11 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
     }
   }
 
-  InputDecoration _animatedInputDecoration(String label, int idx, {IconData? icon}) {
+  InputDecoration _animatedInputDecoration(
+    String label,
+    int idx, {
+    IconData? icon,
+  }) {
     return InputDecoration(
       labelText: label,
       prefixIcon: icon == null ? null : Icon(icon),
@@ -102,12 +107,18 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(22),
         borderSide: BorderSide(
-          color: _focusNodes[idx].hasFocus ? const Color(0xFF1976d2) : Colors.blue.shade100,
+          color:
+              _focusNodes[idx].hasFocus
+                  ? const Color(0xFF1976d2)
+                  : Colors.blue.shade100,
           width: 2.1,
         ),
       ),
       labelStyle: TextStyle(
-        color: _focusNodes[idx].hasFocus ? const Color(0xFF1565c0) : Colors.grey[700],
+        color:
+            _focusNodes[idx].hasFocus
+                ? const Color(0xFF1565c0)
+                : Colors.grey[700],
         fontWeight: FontWeight.w500,
       ),
     );
@@ -119,198 +130,290 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
     const lamaGradient = LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
-      colors: [
-        Color(0xFF2196F3),
-        Color(0xFF1565C0),
-        Color(0xFF42A5F5),
-      ],
+      colors: [Color(0xFF2196F3), Color(0xFF1565C0), Color(0xFF42A5F5)],
     );
 
     return Scaffold(
       body: GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(),
-        child: Container(
-          decoration: const BoxDecoration(
-            gradient: lamaGradient,
-          ),
-          child: Center(
-            child: SingleChildScrollView(
-              child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
-                padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 26),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.98),
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.blueGrey.withOpacity(0.17),
-                      blurRadius: 22,
-                      offset: const Offset(0, 7),
-                    ),
-                  ],
-                ),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'Create Account',
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          color: const Color(0xFF1565C0),
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1.1,
-                        ),
-                      ),
-                      const SizedBox(height: 22),
+        onTap: () => FocusScope.of(context).unfocus(), // dismiss keyboard
+        child: Stack(
+          children: [
+            // Background image
+            Positioned.fill(
+              child: Image.asset(
+                'assets/images/register.jpg',
+                fit: BoxFit.cover,
+              ),
+            ),
 
-                      // FIRST NAME
-                      TextFormField(
-                        controller: _firstNameController,
-                        focusNode: _focusNodes[0],
-                        decoration: _animatedInputDecoration('First Name', 0, icon: Icons.person),
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) return 'First name required';
-                          if (value.trim().length < 5 || value.trim().length > 50) {
-                            return 'First name must be 5–50 chars';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 14),
-
-                      // LAST NAME
-                      TextFormField(
-                        controller: _lastNameController,
-                        focusNode: _focusNodes[1],
-                        decoration: _animatedInputDecoration('Last Name', 1, icon: Icons.person_outline),
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) return 'Last name required';
-                          if (value.trim().length < 5 || value.trim().length > 50) {
-                            return 'Last name must be 5–50 chars';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 14),
-
-                      // EMAIL
-                      TextFormField(
-                        controller: _emailController,
-                        focusNode: _focusNodes[2],
-                        decoration: _animatedInputDecoration('Email', 2, icon: Icons.email_outlined),
-                        keyboardType: TextInputType.emailAddress,
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) return 'Email required';
-                          if (!RegExp(r"^[\w\.-]+@[\w\.-]+\.\w{2,}$").hasMatch(value.trim())) {
-                            return 'Enter a valid email';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 14),
-
-                      // PHONE
-                      TextFormField(
-                        controller: _phoneController,
-                        focusNode: _focusNodes[3],
-                        decoration: _animatedInputDecoration('Phone Number', 3, icon: Icons.phone_outlined),
-                        keyboardType: TextInputType.phone,
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) return 'Phone required';
-                          if (value.trim().length < 8 || value.trim().length > 20) {
-                            return 'Phone must be 8–20 chars';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 14),
-
-                      // ADDRESS LINES
-                      TextFormField(
-                        controller: _address1Controller,
-                        focusNode: _focusNodes[4],
-                        decoration: _animatedInputDecoration('Address Line 1', 4, icon: Icons.home_outlined),
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) return 'Address required';
-                          if ((_address1Controller.text.trim() + _address2Controller.text.trim() + _address3Controller.text.trim()).length < 10) {
-                            return 'Address must total at least 10 chars';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 10),
-                      TextFormField(
-                        controller: _address2Controller,
-                        focusNode: _focusNodes[5],
-                        decoration: _animatedInputDecoration('Address Line 2', 5),
-                        validator: (value) {
-                          // Only require at least one line (checked above)
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 10),
-                      TextFormField(
-                        controller: _address3Controller,
-                        focusNode: _focusNodes[6],
-                        decoration: _animatedInputDecoration('Address Line 3 (optional)', 6),
-                        validator: (value) {
-                          return null; // optional
-                        },
-                      ),
-                      const SizedBox(height: 14),
-
-                      // NIC
-                      TextFormField(
-                        controller: _nicController,
-                        focusNode: _focusNodes[7],
-                        decoration: _animatedInputDecoration('NIC', 7, icon: Icons.credit_card_outlined),
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) return 'NIC required';
-                          if (value.trim().length < 10 || value.trim().length > 12) {
-                            return 'NIC must be 10–12 chars';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 14),
-
-                      // Register button
-                      SizedBox(
-                        width: double.infinity,
-                        height: 46,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            elevation: 0,
-                            backgroundColor: const Color(0xFF1976D2),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            textStyle: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                            ),
-                          ),
-                          onPressed: _isLoading ? null : _registerUser,
-                          child: _isLoading
-                              ? const SizedBox(
-                            height: 24,
-                            width: 24,
-                            child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                              strokeWidth: 3.0,
-                            ),
-                          )
-                              : const Text('Register'),
-                        ),
+            // Foreground content
+            Center(
+              child: SingleChildScrollView(
+                child: Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 18,
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 30,
+                    horizontal: 26,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.50),
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.15),
+                        blurRadius: 22,
+                        offset: const Offset(0, 7),
                       ),
                     ],
+                  ),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Create Account',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.headlineMedium?.copyWith(
+                            color: const Color(0xFF1565C0),
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.1,
+                          ),
+                        ),
+                        const SizedBox(height: 22),
+
+                        // First Name
+                        TextFormField(
+                          controller: _firstNameController,
+                          focusNode: _focusNodes[0],
+                          decoration: _animatedInputDecoration(
+                            'First Name',
+                            0,
+                            icon: Icons.person,
+                          ),
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'First name required';
+                            }
+                            if (value.trim().length < 5 ||
+                                value.trim().length > 50) {
+                              return 'First name must be 5–50 chars';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 14),
+
+                        // Last Name
+                        TextFormField(
+                          controller: _lastNameController,
+                          focusNode: _focusNodes[1],
+                          decoration: _animatedInputDecoration(
+                            'Last Name',
+                            1,
+                            icon: Icons.person_outline,
+                          ),
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Last name required';
+                            }
+                            if (value.trim().length < 5 ||
+                                value.trim().length > 50) {
+                              return 'Last name must be 5–50 chars';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 14),
+
+                        // Email
+                        TextFormField(
+                          controller: _emailController,
+                          focusNode: _focusNodes[2],
+                          decoration: _animatedInputDecoration(
+                            'Email',
+                            2,
+                            icon: Icons.email_outlined,
+                          ),
+                          keyboardType: TextInputType.emailAddress,
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Email required';
+                            }
+                            if (!RegExp(
+                              r"^[\w\.-]+@[\w\.-]+\.\w{2,}$",
+                            ).hasMatch(value.trim())) {
+                              return 'Enter a valid email';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 14),
+
+                        // Phone
+                        TextFormField(
+                          controller: _phoneController,
+                          focusNode: _focusNodes[3],
+                          decoration: _animatedInputDecoration(
+                            'Phone Number',
+                            3,
+                            icon: Icons.phone_outlined,
+                          ),
+                          keyboardType: TextInputType.phone,
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Phone required';
+                            }
+                            if (value.trim().length < 8 ||
+                                value.trim().length > 20) {
+                              return 'Phone must be 8–20 chars';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 14),
+
+                        // Address Line 1
+                        TextFormField(
+                          controller: _address1Controller,
+                          focusNode: _focusNodes[4],
+                          decoration: _animatedInputDecoration(
+                            'Address Line 1',
+                            4,
+                            icon: Icons.home_outlined,
+                          ),
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Address required';
+                            }
+                            if ((_address1Controller.text.trim() +
+                                        _address2Controller.text.trim() +
+                                        _address3Controller.text.trim())
+                                    .length <
+                                10) {
+                              return 'Address must total at least 10 chars';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 10),
+
+                        // Address Line 2
+                        TextFormField(
+                          controller: _address2Controller,
+                          focusNode: _focusNodes[5],
+                          decoration: _animatedInputDecoration(
+                            'Address Line 2',
+                            5,
+                          ),
+                          validator: (value) => null,
+                        ),
+                        const SizedBox(height: 10),
+
+                        // Address Line 3
+                        TextFormField(
+                          controller: _address3Controller,
+                          focusNode: _focusNodes[6],
+                          decoration: _animatedInputDecoration(
+                            'Address Line 3 (optional)',
+                            6,
+                          ),
+                          validator: (value) => null,
+                        ),
+                        const SizedBox(height: 14),
+
+                        // NIC
+                        TextFormField(
+                          controller: _nicController,
+                          focusNode: _focusNodes[7],
+                          decoration: _animatedInputDecoration(
+                            'NIC',
+                            7,
+                            icon: Icons.credit_card_outlined,
+                          ),
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'NIC required';
+                            }
+                            if (value.trim().length < 10 ||
+                                value.trim().length > 12) {
+                              return 'NIC must be 10–12 chars';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 14),
+
+                        // Register Button
+                        SizedBox(
+                          width: double.infinity,
+                          height: 46,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              elevation: 0,
+                              backgroundColor: const Color(0xFF1976D2),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              textStyle: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                              ),
+                            ),
+                            onPressed: _isLoading ? null : _registerUser,
+                            child:
+                                _isLoading
+                                    ? const SizedBox(
+                                      height: 24,
+                                      width: 24,
+                                      child: CircularProgressIndicator(
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                              Colors.white,
+                                            ),
+                                        strokeWidth: 3.0,
+                                      ),
+                                    )
+                                    : const Text(
+                                      'Register',
+                                      style: TextStyle(
+                                        color:
+                                            Colors
+                                                .white, // <-- set text color to white
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pushReplacementNamed(context, '/');
+                          },
+                          child: const Text(
+                            'Already have an account? Login',
+                            style: TextStyle(
+                              color: Color(0xFF1976D2),
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
